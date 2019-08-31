@@ -43,8 +43,8 @@ namespace SadeceGonderdigimKolonlariGuncelleme.Controllers
             });
         }
 
-        
- 
+
+
         // GET api/values
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
@@ -55,90 +55,52 @@ namespace SadeceGonderdigimKolonlariGuncelleme.Controllers
         }
 
 
-        [HttpPost]
-        [Route("HangiAlanlarGonderildiAnlasilmayanDurum")]
-        public void Post([FromBody] PersonelDTO dto)
-        {
-
-            var ss = 11;
-        }
-
+       
         // POST api/values
         [HttpPost]
         //HangiAlanlarGonderildiAnlasilanDurum
-        public ActionResult Post([FromBody] string jsonModel)
+        public ActionResult Post([FromBody]PersonelDTO personelDto)
         {
-            JObject o = JObject.Parse(jsonModel);
-            if (o == null)
+
+            if (personelDto == null || personelDto.Guid == Guid.Empty)
                 throw new Exception("Hiç bir veri göndermediniz!");
 
-            if(!o.ContainsKey("Guid"))
-                throw  new Exception("Guid olmadan işlem yapılmaz. eksik veri gönderdiniz");
-            Guid guid = Guid.Empty;
             try
             {
-                guid =new Guid(o["Guid"].ToString());
-
                 // git DB den verileri çek;
-                var entity = entities.FirstOrDefault(x => x.Guid == guid);
-                if(entity == null) 
+                var entity = entities.FirstOrDefault(x => x.Guid == personelDto.Guid);
+                if (entity == null)
                     throw new Exception("Bu guide ait bir kayıt bulunamadı");
 
+                entity.Ad = personelDto.Ad ?? entity.Ad;
+                entity.Soyad = personelDto.Soyad ?? entity.Soyad;
+                entity.CinsiyetId = personelDto.CinsiyetId ?? entity.CinsiyetId;
+                entity.UyrukId = personelDto.UyrukId ?? entity.UyrukId;
 
-                //şimdi verileri güncellemeye başlayalım
-                if (o.ContainsKey("Ad")) //böyle bir alan json modelde varsa güncelleyelim.
-                {
-                    if (string.IsNullOrEmpty(o["Ad"].ToString()))
-                    {
-                        throw new Exception("Ad alanı zorunludur"); // zorunlu alan olduğu için boş olamaz
-                    }
+                // if (o.ContainsKey("Gruplar")) ////böyle bir alan json modelde varsa güncelleyelim.
+                // {
+                //     if (entity.Gruplar == null)
+                //     {
+                //         entity.Gruplar = new List<GrupDTO>(); //linq sorgusu patlamasın diye null ise bir değer verelim
+                //     }
+                //     foreach (var g in o["Gruplar"].Children())
+                //     {
+                //         guid = new Guid(g["Guid"].ToString()); // guid değerini alalım
+                //         if (!entity.Gruplar.Any(x => x.Guid == guid))
+                //         {
+                //             entity.Gruplar.Add(new GrupDTO()
+                //             {
+                //                 Guid = guid,
+                //                 Ad = (string)g["Ad"]
+                //             });
+                //         }
+                //         else
+                //         {
+                //             // zaten varsa bir şey yapmaya gerek yok
+                //         }
 
-                    entity.Ad = o["Ad"].ToString(); // ad alanı güncellendi
-                }
-
-                if (o.ContainsKey("Soyad"))  //böyle bir alan json modelde varsa güncelleyelim.
-                {
-                    // bunu zorunlu kabul etmedim. direkt güncelle
-                    entity.Soyad = o["Soyad"].ToString();
-                }
-               
-
-                if (o.ContainsKey("CinsiyetId")) //böyle bir alan json modelde varsa güncelleyelim.
-                {
-                    //boş olamaz
-                    entity.CinsiyetId = Convert.ToInt32(o["CinsiyetId"].ToString()); //zaten Foreign Key olduğundan  sıkıntı olmaz
-                }
-
-                if (o.ContainsKey("UyrukId")) //böyle bir alan json modelde varsa güncelleyelim.
-                {
-                    // boş olabilir
-                    entity.UyrukId = Convert.ToInt32(o["UyrukId"].ToString());
-                    entity.UyrukId = entity.UyrukId == 0 ? new int?() : entity.UyrukId;
-                }
-                if (o.ContainsKey("Gruplar")) ////böyle bir alan json modelde varsa güncelleyelim.
-                {
-                    if (entity.Gruplar == null)
-                    {
-                        entity.Gruplar = new List<GrupDTO>(); //linq sorgusu patlamasın diye null ise bir değer verelim
-                    }
-                    foreach (var g in o["Gruplar"].Children())
-                    {
-                        guid = new Guid(g["Guid"].ToString()); // guid değerini alalım
-                        if (!entity.Gruplar.Any(x => x.Guid == guid))
-                        {
-                            entity.Gruplar.Add(new GrupDTO()
-                            {
-                                Guid = guid,
-                                Ad = (string)g["Ad"]
-                            });
-                        }
-                        else
-                        {
-                            // zaten varsa bir şey yapmaya gerek yok
-                        }
-                       
-                    }
-                }
+                //     }
+                // }
 
                 var dbguncelle = entity;
                 //************************************************************

@@ -21,7 +21,7 @@ namespace SadeceGonderdigimKolonlariGuncelleme.DTO
         public string Soyad { get; set; }
 
         [DataMember]
-        public int CinsiyetId { get; set; }
+        public int? CinsiyetId { get; set; }
 
         [DataMember]
         public int? UyrukId { get; set; }
