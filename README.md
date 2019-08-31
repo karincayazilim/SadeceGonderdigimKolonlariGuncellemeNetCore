@@ -2,6 +2,8 @@
 .net core Web Api de client tarafından sadece gönderilen alanların verilerinin güncellenmesi uygulaması
 
 Sistemde Bulunan kayıt:(güncelleme işlemi Guid değerine göre olmaktadır.
+
+
 ["{
 "Guid":"813a19b9-6ffd-4637-b592-4b119a0d67b8",
 "Ad":"Ad1",
@@ -23,6 +25,7 @@ Body: "{\"Guid\":\"813a19b9-6ffd-4637-b592-4b119a0d67b8\",\"Ad\":\"Ad1111\",\"So
 
 
 Sonuç: Güncellenen veriyi göstermektedir.
+
 {
     "guid": "813a19b9-6ffd-4637-b592-4b119a0d67b8",
     "ad": "Ad1111",
@@ -52,10 +55,14 @@ Sonuç: Güncellenen veriyi göstermektedir.
 _______________________________________________________________
 
 Şimdi sadece Ad güncellemesi yapalım
-Body: "{\"Guid\":\"813a19b9-6ffd-4637-b592-4b119a0d67b8\",\"Ad\":\"SADECE AD DEĞİŞTİR\"}"
+Body: 
+
+"{\"Guid\":\"813a19b9-6ffd-4637-b592-4b119a0d67b8\",\"Ad\":\"SADECE AD DEĞİŞTİR\"}"
 
 
 Sonuç: JSON
+
+
 {
     "guid": "813a19b9-6ffd-4637-b592-4b119a0d67b8",
     "ad": "SADECE AD DEĞİŞTİR",
